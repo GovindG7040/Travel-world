@@ -1,10 +1,21 @@
-import express from 'express'
-import { createReview } from '../controllers/reviewController.js'
-import { verifyUser } from '../utils/verifyToken.js'
+// backend/routes/reviews.js
+import express from "express";
+import {
+  createReview,
+  getReviewsByTour,
+  // ... other controller functions
+} from "../controllers/reviewController.js";
+import verifyToken, { verifyAdmin } from "../utils/verifyToken.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/:tourId',verifyUser,createReview)
+// Create review (any authenticated user)
+router.post("/:id", verifyToken, createReview);
 
+// Get reviews by tour id (example)
+router.get("/tour/:tourId", getReviewsByTour);
 
-export default router
+// Admin routes...
+// router.delete('/:id', verifyAdmin, deleteReview)
+
+export default router;
