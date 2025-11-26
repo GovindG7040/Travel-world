@@ -1,3 +1,4 @@
+// src/index.js
 import React from "react";
 import ReactDOM from "react-dom/client";
 
@@ -8,18 +9,17 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { BrowserRouter } from "react-router-dom";
 import { AuthContextProvider } from "./context/AuthContext";
-// import { ThemeProvider } from "./context/ThemeContext";
-
+import { ThemeProvider } from "./context/ThemeContext";   // ⬅️ IMPORTANT
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthContextProvider>
-       {/* <ThemeProvider> */}
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-    {/* </ThemeProvider> */}
+      <ThemeProvider>         {/* ⬅️ wrap BrowserRouter inside */}
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ThemeProvider>
     </AuthContextProvider>
   </React.StrictMode>
 );
