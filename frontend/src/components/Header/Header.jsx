@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useContext } from "react";
+// src/components/Header/Header.jsx
+import React, { useRef, useEffect, useContext, useState } from "react";
 import { Container, Row, Button } from "reactstrap";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 
@@ -7,20 +8,9 @@ import "./header.css";
 import { AuthContext } from "./../../context/AuthContext";
 
 const nav__links = [
-  {
-    path: "/home",
-    display: "Home",
-  },
-  {
-    path: "/about",
-    display: "About",
-  },
-  {
-    path: "/tours",
-    display: "Tours",
-  },
-  // Optional: if you want My Bookings in the top nav (uncomment)
-  // { path: "/my-bookings", display: "My Bookings" },
+  { path: "/home", display: "Home" },
+  { path: "/about", display: "About" },
+  { path: "/tours", display: "Tours" },
 ];
 
 const Header = () => {
@@ -28,39 +18,61 @@ const Header = () => {
   const navigate = useNavigate();
   const { user, dispatch } = useContext(AuthContext);
 
+  // theme state
+  const [theme, setTheme] = useState(() => {
+    // initial from localStorage (fallback 'light')
+    try {
+      return localStorage.getItem("theme") || "light";
+    } catch {
+      return "light";
+    }
+  });
+
+  // apply theme to body class
+  useEffect(() => {
+    const body = document.body;
+    if (theme === "dark") {
+      body.classList.add("dark-theme");
+    } else {
+      body.classList.remove("dark-theme");
+    }
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {}
+  }, [theme]);
+
+  const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
+
   const logout = () => {
     dispatch({ type: "LOGOUT" });
     navigate("/");
   };
 
   const stickyHeaderFunc = () => {
-    window.addEventListener("scroll", () => {
-      if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
-        headerRef.current.classList.add("sticky__header");
-      } else {
-        headerRef.current.classList.remove("sticky__header");
-      }
-    });
+    if (!headerRef.current) return;
+    if (document.body.scrollTop > 80 || document.documentElement.scrollTop > 80) {
+      headerRef.current.classList.add("sticky__header");
+    } else {
+      headerRef.current.classList.remove("sticky__header");
+    }
   };
 
   useEffect(() => {
-    stickyHeaderFunc();
-
-    return window.removeEventListener("scroll", stickyHeaderFunc);
-  });
+    window.addEventListener("scroll", stickyHeaderFunc);
+    return () => window.removeEventListener("scroll", stickyHeaderFunc);
+  }, []);
 
   return (
     <header className="header" ref={headerRef}>
       <Container>
         <Row>
           <div className="nav__wrapper d-flex align-items-center justify-content-between">
-            {/* =====logo===== */}
+            {/* logo */}
             <div className="logo">
-              <img src={logo} alt="" />
+              <img src={logo} alt="logo" />
             </div>
-            {/* =====logo end ===== */}
 
-            {/* =====menu===== */}
+            {/* nav */}
             <div className="navigation">
               <ul className="menu d-flex align-items-center gap-5">
                 {nav__links.map((item, index) => (
@@ -75,23 +87,36 @@ const Header = () => {
                 ))}
               </ul>
             </div>
-            {/* ===end=== */}
 
+            {/* right */}
             <div className="nav__right d-flex align-items-center gap-4">
+              {/* Theme toggle */}
+              <button
+                onClick={toggleTheme}
+                aria-label="Toggle dark mode"
+                title={theme === "dark" ? "Switch to light" : "Switch to dark"}
+                className="theme-toggle-btn"
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  cursor: "pointer",
+                  fontSize: 20,
+                }}
+              >
+                {theme === "dark" ? "🌙" : "☀️"}
+              </button>
+
               <div className="nav__btns d-flex align-items-center gap-4">
                 {user ? (
                   <>
-                    {/* show username */}
                     <h5 className="mb-0">{user.username}</h5>
 
-                    {/* My Bookings link (visible to logged-in users) */}
                     <Button className="btn btn-outline-primary">
                       <Link to="/my-bookings" style={{ color: "inherit", textDecoration: "none" }}>
                         My Bookings
                       </Link>
                     </Button>
 
-                    {/* Logout */}
                     <Button className="btn btn-dark" onClick={logout}>
                       Logout
                     </Button>

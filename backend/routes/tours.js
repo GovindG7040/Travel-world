@@ -1,30 +1,31 @@
-
+// backend/routes/tours.js
 import express from 'express'
-import { createTour, deleteTour, getAllTour, getFeaturedTour, getSingleTour, getTourBySearch, getTourCount, updateTour } from '../controllers/tourController.js'
+import {
+  createTour,
+  deleteTour,
+  getAllTour,
+  getFeaturedTour,
+  getSingleTour,      // ✅ import again
+  getTourBySearch,
+  getTourCount,
+  updateTour
+} from '../controllers/tourController.js'
 import { verifyAdmin } from '../utils/verifyToken.js'
 
 const router = express.Router()
 
-// create new tour
-router.post('/',verifyAdmin,createTour)
+// admin CRUD
+router.post('/', verifyAdmin, createTour)
+router.put('/:id', verifyAdmin, updateTour)
+router.delete('/:id', verifyAdmin, deleteTour)
 
-// update  tour
-router.put('/:id',verifyAdmin,updateTour)
+// search endpoints FIRST
+router.get('/search', getTourBySearch)
+router.get('/search/getFeaturedTours', getFeaturedTour)
+router.get('/search/getTourCount', getTourCount)
 
-// delete tour
-router.delete('/:id',verifyAdmin,deleteTour)
-
-// get single tour
-router.get('/:id',getSingleTour)
-
-// get all tour
-router.get('/',getAllTour)
-
-// get tour by search
-router.get('/search/getTourBySearch',getTourBySearch)
-
-router.get('/search/getFeaturedTours',getFeaturedTour)
-
-router.get('/search/getTourCount',getTourCount)
+// then single tour and list
+router.get('/:id', getSingleTour)   // ✅ needed for /tours/:id
+router.get('/', getAllTour)
 
 export default router

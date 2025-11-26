@@ -85,3 +85,67 @@ ul {
   font-size: 1.7rem;
   color: var(--heading-color);
 }
+
+/* ---------------- DARK MODE SUPPORT ---------------- */
+
+/* ---------- theme variables (light default) ---------- */
+:root {
+  --primary-color: #ff7e01;
+  --secondary-color: #faa935;
+  --heading-color: #0b2727;
+  --text-color: #6e7074;
+  --bg-color: #ffffff;
+  --card-bg: #ffffff;
+  --muted: #f6f8fa;
+}
+
+/* ---------- dark theme overrides (toggle by adding .dark-theme to <body>) ---------- */
+body.dark-theme {
+  --primary-color: #ffb86b;
+  --secondary-color: #ffa953;
+  --heading-color: #e6f0f0;
+  --text-color: #c9d6d6;
+  --bg-color: #0f1720;      /* page background */
+  --card-bg: #111823;       /* cards, panels */
+  --muted: #0b1220;
+  color-scheme: dark;
+}
+
+/* apply bg / text using the variables so pages switch correctly */
+body {
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* example elements to pick up card bg */
+header.header,
+.search__bar,
+.tour__content,
+.review__item,
+.user__reviews,
+.newsletter,
+.common-section {
+  background: var(--card-bg);
+}
+
+/* buttons using primary/secondary */
+.primary__btn {
+  background: var(--secondary-color) !important;
+}
+.secondary__btn {
+  color: var(--heading-color) !important;
+}
+
+/* small utility so form inputs are visible in dark mode */
+input,
+textarea,
+select {
+  background: transparent;
+  color: inherit;
+  border-color: rgba(255,255,255,0.12);
+}
+
+/* tweak for the search bar dark style (optional) */
+.search__bar {
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
